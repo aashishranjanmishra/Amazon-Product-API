@@ -1,12 +1,15 @@
 <?php
 
+* Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved. */
+/* Licensed under the Apache License, Version 2.0. */
+    
+    
 $var_value = $_GET['asin_code'];
-$serviceName="ProductAdvertisigAPIn";
+$serviceName="ProductAdvertisingAPI";
 $region="eu-west-1";
-$accessKey="amazonAccessKey";
-$secretKey="amazonPrivateKey";
-$partnerTag="amazonPartnerTag";
-
+$accessKey="YOUR-AMAZON-ACCESS-KEY";
+$secretKey="YOUR-AMAZON-SECRET-KEY";
+$partnerTag="ASSOCIATE-TAG";
 $payload="{"
     ." \"ItemIds\": ["
     ."  \"".$var_value."\""
@@ -105,8 +108,8 @@ $stream = stream_context_create ( $params );
 $fp = @fopen ( 'https://'.$host.$uriPath, 'rb', false, $stream );
 
 if (! $fp) {
-echo "";
-}else{
+throw new Exception ( "Exception Occured" );
+}
 $response = @stream_get_contents ( $fp );
 if ($response === false) {
 throw new Exception ( "Exception Occured" );
@@ -123,10 +126,10 @@ $i = $itemResult->ItemsResult->Items[0];
         $item->largeImage = $i->Images->Primary->Large->URL;
         $item->percentage = $i->Offers->Listings[0]->Price->Savings->Percentage;
         $item->price = $i->Offers->Listings[0]->Price->DisplayAmount;
-        $item->Realprice = $i->Offers->Listings[0]->SavingBasis->Amount;
+        $item->Realprice = $i->Offers->Listings[0]->SavingBasis->DisplayAmount;
         $item->features = $i->ItemInfo->Features->DisplayValues;
         $item->ratings = $i->Offers->Listings[0]->MerchantInfo->FeedbackRating;
-}
+
 
 
 class AwsV4 {
@@ -258,19 +261,13 @@ private function getDate() {
 }
 ?>
 
-<input type="text" autofocus value="<?php echo $item->title;?>" placeholder="Name">
-<input type="text"  value="<?php echo $price;?>" name="price" placeholder="Price">
-<input type="text" autofocus value="<?php echo $item->Realprice;?>">
-<input type="number" value="<?php echo $item->percentage;?>" placeholder="Offer Discount">
-<input type="text" autofocus value="<?php echo $item->ratings?>">
-<input type="text" autofocus value="<?php echo $item->mediumImage;?>" placeholder="image src">
-<input type="text" autofocus value="<?php echo $item->detailedPageURL;?>" placeholder="Product Url">
 
-<textarea rows="3">
-  <?php foreach ($item->features as $key => $value) :?>
-    <?php echo $value."<br>";?>
-  <?php endforeach;?>
- </textarea>
-
-
-
+<a href="<?php echo $item->detailedPageURL?>" title="<?php echo $item->title?>" target="_blank"></a>
+<img src="<?php echo $item->mediumImage?>" alt="<?php echo $item->title?>">
+<span><?php echo $item->percentage?>%</span><br>
+<a href="<?php echo $item->detailedPageURL?>" title="<?php echo $item->title?>" target="_blank"><?php echo $item->title?></a>
+<br>
+<span><?php echo $item->price?></span>
+<?php foreach ($item->features as $key => $value) :?>
+<p><?php echo $value."<br>"?></p>
+ <?php endforeach?>
