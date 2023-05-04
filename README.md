@@ -5,7 +5,7 @@
 
 ====================================STRUCTURE====================================
 
-index.php ==> To retrieve Amazon product details using the ASIN number.
+index.php ==> To retrieve Amazon product details using the ASIN number.<br>
 Create.php ==> To import the Products Data.
 
 =================================================================================
